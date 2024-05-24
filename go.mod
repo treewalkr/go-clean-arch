@@ -1,4 +1,4 @@
-module go-clean-architecture
+module clean-arch
 
 go 1.22
 
