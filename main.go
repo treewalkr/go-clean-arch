@@ -1,10 +1,6 @@
 package main
 
 import (
-	"clean-arch/adapters"
-	"clean-arch/application"
-	"clean-arch/domain"
-	"clean-arch/infrastructure/persistence"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,14 +9,11 @@ import (
 func main() {
 	app := fiber.New()
 
-	// Initialize the Infrastructure Layer (In-Memory DB)
-	var userRepo domain.UserRepository = persistence.NewInMemoryUserRepository()
-
-	// Initialize the Application Layer
-	userService := application.NewUserService(userRepo)
-
-	// Initialize the Adapters (or interface) Layer
-	userHandler := adapters.NewUserHandler(userService)
+	// Initialize dependencies with Wire
+	userHandler, err := InitializeApp()
+	if err != nil {
+		log.Fatalf("Failed to initialize app: %v", err)
+	}
 
 	// Set up the routes and assign handlers
 	app.Get("/", func(c *fiber.Ctx) error {
